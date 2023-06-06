@@ -1,13 +1,9 @@
-FROM maven AS build
-ARG JAR_FILE
-WORKDIR /app
-COPY pom.xml .
-RUN mvn dependency:go-offline
-COPY src ./src
-RUN mvn package -DskipTests
-RUN mv target/${JAR_FILE} app.jar
+FROM maven:3.5-jdk-8 AS build  
+COPY src /usr/src/app/src  
+COPY pom.xml /usr/src/app  
+RUN mvn -f /usr/src/app/pom.xml clean package
 
-FROM openjdk
-WORKDIR /app
-COPY /app/app.jar .
-CMD ["java", "-jar", "app.jar"]
+FROM gcr.io/distroless/java  
+COPY --from=build /usr/src/app/target/helloworld-1.0.0-SNAPSHOT.jar /usr/app/helloworld-1.0.0-SNAPSHOT.jar  
+EXPOSE 8080  
+ENTRYPOINT ["java","-jar","/usr/app/helloworld-1.0.0-SNAPSHOT.jar"] 
