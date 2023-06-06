@@ -1,6 +1,6 @@
 FROM maven AS build
 WORKDIR /app
-COPY . .
+COPY . /app/
 RUN mvn -f /app/pom.xml clean package
 
 FROM openjdk 
