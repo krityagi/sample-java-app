@@ -9,5 +9,5 @@ RUN mv target/${JAR_FILE} app.jar
 
 FROM openjdk
 WORKDIR /app
-COPY --from=build /app/app.jar .
+COPY /app/app.jar .
 CMD ["java", "-jar", "app.jar"]
